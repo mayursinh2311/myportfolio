@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mayur Raulji — Portfolio</title>
+  <meta name="description" content="Portfolio of Mayur Raulji — Software Developer" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020; --card:#0f1724; --muted:#9aa3b2; --accent:#7c5cff; --glass: rgba(255,255,255,0.06);
+      --light-bg:#f6f8fb; --light-card:#ffffff; --light-text:#0b1020; --light-muted:#505a66; --light-accent:#4c3bff;
+      --radius:14px; --radius-sm:10px; --glass-border: rgba(255,255,255,0.06);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; font-family:Inter, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: linear-gradient(180deg, var(--bg) 0%, #071022 100%); color:#e6eef8; -webkit-font-smoothing:antialiased;
+      transition: background .35s ease, color .35s ease;
+      scroll-behavior:smooth;
+      overflow-x:hidden;
+    }
+    body.light{
+      background: linear-gradient(180deg, var(--light-bg) 0%, #eef2fb 100%); color:var(--light-text);
+    }
+    /* canvas particles sits behind everything */
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+    /* layout */
+    .container{max-width:1100px;margin:0 auto;padding:28px;position:relative;z-index:2}
+    header{display:flex;align-items:center;justify-content:space-between;padding:10px 0;position:sticky;top:0;backdrop-filter:blur(6px);z-index:10}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#00d4ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:white}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:inherit;text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:600;opacity:.9}
+    nav a.active{box-shadow:0 6px 18px rgba(0,0,0,0.35);}
+    .controls{display:flex;gap:8px;align-items:center}
+    .toggle{background:var(--glass);border:1px solid var(--glass-border);padding:8px;border-radius:12px;cursor:pointer}
+
+    /* hero */
+    .hero{min-height:72vh;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:center}
+    .hero-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+    h1{font-size:42px;margin:0;letter-spacing:0.6px}
+    .name{font-size:28px;font-weight:700;margin:0}
+    .cta{margin-top:8px}
+    .btn{background:linear-gradient(90deg,var(--accent),#00d4ff);padding:12px 18px;border-radius:12px;border:none;color:white;font-weight:700;cursor:pointer}
+
+    /* right side rotating titles */
+    .titles{background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:18px;height:200px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 30px rgba(0,0,0,0.35)}
+    .title-wrap{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .title-item{font-size:20px;font-weight:700;opacity:0.95}
+    .typing{font-family:monospace;display:inline-block}
+
+    /* sections */
+    section{padding:56px 0}
+    .profile{display:flex;gap:26px;align-items:flex-start}
+    .avatar{width:160px;height:160px;border-radius:16px;background:linear-gradient(180deg,var(--card),#0b1220);box-shadow:0 8px 30px rgba(12,18,30,0.6);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .about-text{max-width:720px}
+    .skills{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .skill{background:var(--glass);padding:8px 12px;border-radius:10px;font-weight:600}
+
+    /* projects grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.02)}
+    .card h4{margin:8px 0}
+    .stack{font-size:13px;color:var(--muted)}
+    .card .actions{margin-top:12px}
+
+    /* contact */
+    .contact-form{max-width:720px}
+    .field{display:flex;flex-direction:column;margin-bottom:12px}
+    input,textarea{padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;outline:none}
+    textarea{min-height:120px;resize:vertical}
+
+    footer{padding:20px 0;text-align:center;color:var(--muted)}
+
+    /* light mode overrides */
+    body.light .logo{background:linear-gradient(135deg,var(--light-accent),#65b8ff)}
+    body.light .titles{background:linear-gradient(180deg,var(--light-card),#ffffff)}
+    body.light .card{background:var(--light-card);border:1px solid rgba(10,10,10,0.03);box-shadow:0 6px 18px rgba(34,40,50,0.06);}
+    body.light .skill{background:rgba(10,10,10,0.04)}
+    body.light input, body.light textarea{border:1px solid rgba(12,18,30,0.06)}
+
+    /* small screens */
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr;gap:20px;padding-top:20px}
+      .titles{height:auto}
+      nav{display:none}
+    }
+
+    /* subtle animations */
+    .fade-in{animation:fadeIn .9s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    .type-cursor{display:inline-block; width:10px; background:currentColor; margin-left:6px; animation:blink 1s steps(2) infinite}
+    @keyframes blink{50%{opacity:0}}
+
+    .glass-card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:12px;padding:16px}
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">MR</div>
+        <div>
+          <div style="font-weight:700">Mayur Raulji</div>
+          <div style="font-size:12px;color:var(--muted)">Software Developer</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <button class="toggle" id="themeToggle" title="Toggle dark/light mode">Toggle</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="hero-center fade-in">
+          <h1>Welcome to My Portfolio!!</h1>
+          <p class="name">I’m <strong>Mayur Raulji</strong></p>
+          <div class="cta"><button class="btn" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">Explore More</button></div>
+        </div>
+
+        <aside class="titles fade-in">
+          <div class="title-wrap">
+            <div class="title-item"></div>
+            <div id="rotating" class="title-item typing"><span id="rotating-text">Software Developer</span><span class="type-cursor"></span></div>
+            <small style="color:var(--muted)"></small>
+          </div>
+        </aside>
+      </section>
+
+      <section id="about">
+        <div class="profile container">
+          <div class="avatar glass-card">Mayur<br><small style="opacity:.7">Avatar</small></div>
+          <div class="about-text">
+            <h2>About Me</h2>
+            <p>Hi, I'm <strong>Mayur Raulji</strong>, a passionate and creative software developer who loves building meaningful digital experiences. I enjoy solving problems, exploring new technologies, and crafting visually stunning and user-friendly designs. My goal is simple — learn, grow, and develop amazing projects that make an impact.</p>
+
+            <div class="skills">
+              <div class="skill">HTML</div>
+              <div class="skill">CSS</div>
+              <div class="skill">JavaScript</div>
+              <div class="skill">React</div>
+              <div class="skill">UI/UX</div>
+              <div class="skill">Problem Solving</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects">
+        <div class="container">
+          <h2>Projects</h2>
+          <div class="grid">
+            <div class="card">
+              <h4>Cafe Management System</h4>
+              <p class="stack">A web-based system to manage orders, billing & stock efficiently.</p>
+              <div class="actions"><button class="btn">View Project</button></div>
+            </div>
+
+            <div class="card">
+              <h4>Portfolio Website</h4>
+              <p class="stack">A modern smooth-animated personal design (this portfolio).</p>
+              <div class="actions"><button class="btn">View Project</button></div>
+            </div>
+
+            <div class="card">
+              <h4>To-Do App</h4>
+              <p class="stack">Simple and clean task manager with real-time UI updates.</p>
+              <div class="actions"><button class="btn">View Project</button></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container">
+          <h2>Contact Me</h2>
+          <div class="contact-form">
+            <form onsubmit="event.preventDefault(); alert('Thanks for reaching out — this form is demo-only. Replace handler with your backend.');">
+              <div class="field"><label>Name</label><input type="text" placeholder="Your name" required></div>
+              <div class="field"><label>Email</label><input type="email" placeholder="your@email.com" required></div>
+              <div class="field"><label>Message</label><textarea placeholder="Hi Mayur, I want to..." required></textarea></div>
+              <div class="field"><button class="btn" type="submit">Send Message</button></div>
+            </form>
+
+            <div style="margin-top:20px;color:var(--muted)">
+              <div>Email: <a href="mailto:mayursinhr391.com">mayursinhr391.com</a></div>
+              <div>GitHub: <a href="#">github.com/yourhandle</a></div>
+              <div>LinkedIn: <a href="#">linkedin.com/in/yourprofile</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      © 2025 Mayur Raulji. All Rights Reserved.
+    </footer>
+  </div>
+
+  <script>
+    // Theme toggle
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const stored = localStorage.getItem('mr-theme');
+    if(stored==='light') body.classList.add('light');
+    themeToggle.addEventListener('click', ()=>{
+      body.classList.toggle('light');
+      localStorage.setItem('mr-theme', body.classList.contains('light')? 'light' : 'dark');
+    });
+
+    // Nav active highlight on scroll
+    const links = document.querySelectorAll('.nav-link');
+    const sections = ['home','about','projects','contact'].map(id=>document.getElementById(id));
+    function onScroll(){
+      const y = window.scrollY + 120;
+      sections.forEach((sec, idx)=>{
+        if(!sec) return;
+        const top = sec.offsetTop;
+        const bottom = top + sec.offsetHeight;
+        if(y >= top && y < bottom){
+          links.forEach(l=>l.classList.remove('active'));
+          links[idx].classList.add('active');
+        }
+      })
+    }
+    window.addEventListener('scroll', onScroll);
+
+    // Rotating typing titles
+    const titles = ['Software Developer','Ready to Rise','Always Be Creative'];
+    let ti = 0;
+    const rotEl = document.getElementById('rotating-text');
+    const cursor = document.querySelector('.type-cursor');
+
+    function typeText(text, cb){
+      rotEl.textContent='';
+      let i=0;
+      const iv = setInterval(()=>{
+        rotEl.textContent += text.charAt(i);
+        i++;
+        if(i>text.length){ clearInterval(iv); setTimeout(cb,900); }
+      },80);
+    }
+    function eraseText(cb){
+      let txt = rotEl.textContent;
+      let i = txt.length;
+      const iv = setInterval(()=>{
+        rotEl.textContent = txt.substring(0,i-1);
+        i--;
+        if(i<=0){ clearInterval(iv); setTimeout(cb,250); }
+      },40);
+    }
+    function loopTitles(){
+      typeText(titles[ti], ()=>{
+        setTimeout(()=>{ eraseText(()=>{ ti = (ti+1)%titles.length; loopTitles(); }) },1200);
+      });
+    }
+    loopTitles();
+
+    // Simple particle background animation (canvas)
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    const particles = [];
+    const PARTICLE_COUNT = Math.min(90, Math.floor((W*H)/80000));
+
+    function rand(min,max){return Math.random()*(max-min)+min}
+    class P{constructor(){this.reset()} reset(){this.x=rand(0,W);this.y=rand(0,H);this.vx=rand(-0.3,0.6);this.vy=rand(-0.2,0.2);this.r=rand(0.6,2.6);this.alpha=rand(0.08,0.6)} move(){this.x+=this.vx;this.y+=this.vy; if(this.x>W+20) this.x=-20; if(this.x<-20) this.x=W+20; if(this.y>H+20) this.y=-20; if(this.y<-20) this.y=H+20} draw(){ctx.beginPath(); ctx.fillStyle = 'rgba(255,255,255,'+this.alpha+')'; ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill()}}
+    for(let i=0;i<PARTICLE_COUNT;i++) particles.push(new P());
+
+    function onResize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; particles.length=0; for(let i=0;i<PARTICLE_COUNT;i++) particles.push(new P()); }
+    addEventListener('resize', onResize);
+
+    function loop(){ ctx.clearRect(0,0,W,H); // subtle gradient overlay
+      const g = ctx.createLinearGradient(0,0,W,H);
+      if(document.body.classList.contains('light')){
+        g.addColorStop(0,'rgba(60,80,120,0.02)'); g.addColorStop(1,'rgba(200,220,255,0.02)');
+      } else { g.addColorStop(0,'rgba(120,75,255,0.02)'); g.addColorStop(1,'rgba(0,212,255,0.02)'); }
+      ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+      for(const p of particles){ p.move(); p.draw(); }
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // Smoothly update nav active on load
+    setTimeout(onScroll,300);
+
+    // Small accessibility: enable keyboard toggle with T
+    window.addEventListener('keydown', (e)=>{ if(e.key.toLowerCase()==='t'){ themeToggle.click(); } });
+  </script>
+</body>
+</html>
